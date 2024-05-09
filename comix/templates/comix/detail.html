@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load comix_tags %}
+{% block content %}
+
+<!--body-->
+  <div class="container marketing">
+    <hr class="featurette-divider">
+    <div class="row featurette">
+      <div class="col-md-7 text-break">
+        <h2 class="featurette-heading fw-normal lh-1">{{ comix.title|title }}. <span class="text-body-secondary">It’ll blow your mind.</span></h2>
+        <p class="lead">{{ comix.description|linebreaksbr|truncatechars:1000 }}. </p>
+      </div>
+<!--      start image block-->
+        <div class="col-md-5">
+          <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <title>Placeholder</title>
+            <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/>
+            {% if comix.image %}
+            <image href="{{ comix.image.url }}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+            {% endif %}
+            <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
+          </svg>
+        </div>
+<!--        end image block-->
+      <div class="col-md-7 text-break" style="position: relative;">
+        <p style="position: absolute; top: 0; right: 0;">Wait a minute after click read while file is loading</p>
+<!--        start send comment-->
+          <form id="commentForm" action="." method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label">Send comment</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1" name="comment" value="" rows="3"></textarea><br>
+              <input type="submit" class="btn btn-outline-secondary" value="send">
+            </div>
+          </form>
+  <!--     end send-comment   -->
+  <!--  start scroll comments-->
+          {% show_comments %}
+  <!-- end scroll comments-->
+      </div>
+      <div class="col-md-5 text-break container text-center"><br>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+          <div id="fileContent"></div>
+          <button id="readButton" type="submit" class="btn btn-outline-secondary"><a href="{% url 'open_file' comix.id %}">read</a></button>
+<!--      <button id="readButton" type="submit" class="btn btn-outline-secondary" name="file" value="{{ comix }}">read</button>-->
+          <form method="post" action=".">
+            {% csrf_token %}
+            <!--like -->
+            <button type="button" class="btn btn-outline-secondary" name="like">
+            {% if request.user.is_authenticated and comix_like %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+              </svg>
+            {% else %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="m8 2.42-.717-.737c-1.13-1.161-3.243-.777-4.01.72-.35.685-.451 1.707.236 3.062C4.16 6.753 5.52 8.32 8 10.042c2.479-1.723 3.839-3.29 4.491-4.577.687-1.355.587-2.377.236-3.061-.767-1.498-2.88-1.882-4.01-.721zm-.49 8.5c-10.78-7.44-3-13.155.359-10.063q.068.062.132.129.065-.067.132-.129c3.36-3.092 11.137 2.624.357 10.063l.235.468a.25.25 0 1 1-.448.224l-.008-.017c.008.11.02.202.037.29.054.27.161.488.419 1.003.288.578.235 1.15.076 1.629-.157.469-.422.867-.588 1.115l-.004.007a.25.25 0 1 1-.416-.278c.168-.252.4-.6.533-1.003.133-.396.163-.824-.049-1.246l-.013-.028c-.24-.48-.38-.758-.448-1.102a3 3 0 0 1-.052-.45l-.04.08a.25.25 0 1 1-.447-.224l.235-.468ZM6.013 2.06c-.649-.18-1.483.083-1.85.798-.131.258-.245.689-.08 1.335.063.244.414.198.487-.043.21-.697.627-1.447 1.359-1.692.217-.073.304-.337.084-.398"/>
+              </svg>
+            {% endif %}
+            </button>
+            <!--end like -->
+            <!--start bookmark -->
+            <button type="submit" class="btn btn-outline-secondary" name="bookmark">
+              {% if request.user.is_authenticated and comix_bookmark %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-check-fill" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m8.854-9.646a.5.5 0 0 0-.708-.708L7.5 7.793 6.354 6.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                </svg>
+              {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                  <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                </svg>
+              {% endif %}
+            </button>
+              <!--end bookmark -->
+          </form>
+        </div>
+<!--        grade-->
+        <form>
+          {% csrf_token %}
+          <div style="margin: 0 auto; margin-top: 20px;">
+            <label for="grade">Rate:</label>
+            <select id="grade" name="grade" class="form-select" style="width: 150px; margin: 0 auto; margin-top: 20px;" aria-label="Default select example">
+              <option selected>grade</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select><br>
+          </div>
+        </form>
+<!--  end  grade-->
+        <p class="lead">
+          <ul class="demo">
+            {% with comix.genre.all as genre_list %}
+            <li>
+              {{ genre_list|join:" / " }}
+            </li>
+            {% endwith %}
+            <li>{{ comix.chapters }} tom</li>
+            {% if comix.pages %}
+            <li>{{ comix.pages }} pages</li>
+            {% endif %}
+          </ul>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+<script src="{% static 'assets/js/comix_detail.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+.scroll-container {
+    height: 200px;
+    overflow: auto;
+}
+ul.demo {
+  list-style-type: none;    */delete the marks */
+}
+
+.col-md-7.text-break {
+    height: 730px;
+    overflow: auto;
+}

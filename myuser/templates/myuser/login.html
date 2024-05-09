@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br><br><br><br><br>
+<div class="container" style="width: 300px">
+  <form method="post" action=".">{% csrf_token %}
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label><br>
+      {{ form.email }}
+    </div><br>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label><br>
+      {{ form.password }}
+    </div><br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form><br>
+  <a href="{% url 'register' %}">Register</a>
+</div>
+{% endblock %}

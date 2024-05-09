@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br><br>
+
+<div class="container" style="width: 300px">
+  <form method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+  </form>
+  <a href="{% url 'login' %}">login</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% if comments %}
+  <div class="scroll-container">
+    <div data-spy="scroll"  data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0" id="commentContainer">
+      {% for comment in comments %}
+      <div>
+        <h5 id="scroll{{ comment.id }}">{{ comment.user.username }}</h5>
+        <p>{{ comment.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

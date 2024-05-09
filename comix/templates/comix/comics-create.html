@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<br><br><br><br><br><br><br><br><br>
+<div class="container">
+  {% if not_valid %}
+    <h3 style="text-align: center;">The form is not valid!</h3><br><br>
+  {% endif %}
+  <h2 style="text-align: center;">Add new comix file in .cbr or .cbz format</h2><br><br>
+  <div class="row justify-content-center"> <!-- Центрируем содержимое по горизонтали -->
+    <div class="col-md-6"> <!-- Задаем ширину контейнера для формы -->
+      <div class="row g-3">
+        <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ request.user.email }}">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="title" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="title" name="title" placeholder="">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <div class="col-mb3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="chapters" class="col-sm-2 col-form-label">Chapters</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="chapters" name="chapters" placeholder="">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="genre" class="col-sm-2 col-form-label">Genre</label>
+            <div class="col-sm-10">
+              {{ form.genre }}
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="comix_file" class="col-sm-2 col-form-label">Comix file</label>
+            <div class="col-sm-10">
+              {{ form.comix_file }}
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="image" class="col-sm-2 col-form-label">Image</label>
+            <div class="col-sm-10">
+              {{ form.image }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--<div class="container" style="width: 300px">-->
+<!--  <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}-->
+<!--    <div class="form-group">-->
+<!--      <label for="">title</label><br>-->
+<!--      {{ form.title }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">description</label><br>-->
+<!--      {{ form.description }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">chapters</label><br>-->
+<!--      {{ form.chapters }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">pages</label><br>-->
+<!--      {{ form.pages }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">genre</label><br>-->
+<!--      {{ form.genre }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">comix_file</label><br>-->
+<!--      {{ form.comix_file }}-->
+<!--    </div><br>-->
+<!--    <div class="form-group">-->
+<!--      <label for="">image</label><br>-->
+<!--      {{ form.image }}-->
+<!--    </div><br>-->
+<!--    <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--  </form><br>-->
+<!--  <a href="{% url 'register' %}">Register</a>-->
+<!--</div>-->
+{% endblock %}
+
