@@ -159,16 +159,16 @@ MEDIA_URL = 'media/'
 #     }
 # }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://core-redis-comix-1:6379/1",  # Используем имя контейнера Redis
-#     }
-# }
-
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": "redis://core-redis-comix-1:6379/1",  # Используем имя контейнера Redis
     }
 }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#     }
+# }
