@@ -52,11 +52,13 @@ class ComicsListView(ListView):
     model = Comix
     template_name = 'comix/comics-list.html'
     context_object_name = 'comix'
-    filterset_class = ComixFilter
 
     def get_queryset(self):
         sort_param = self.request.GET.get('sort')
-        if sort_param == 'bestsellers':
+        search_name = self.request.GET.get('search')
+        if search_name:
+            queryset = Comix.objects.filter(title__icontains=search_name)
+        elif sort_param == 'bestsellers':
             best_watches = Comix.objects.order_by('-watches').values_list('id', flat=True)[:5]
             queryset = Comix.objects.filter(pk__in=best_watches, common_grade__gte=7)
         else:
@@ -70,16 +72,7 @@ class ComicsListView(ListView):
             if not (genre_id or sort_param):
                 queryset = super().get_queryset()
 
-        self.filterset = ComixFilter(self.request.GET, queryset)
-
-        return self.filterset.qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['filter'] = self.filterset
-
-        return context
+            return queryset
 
 
 def category_view(request):

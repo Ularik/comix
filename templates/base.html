@@ -120,39 +120,46 @@
           <span class="fs-4">Comics pager</span>
       </a>
 <!-- search-->
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-          <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-        </form>
+      <form class="d-flex align-items-center col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{% url 'list' %}" method="get">
+        <input type="search" class="form-control me-2" placeholder="Search..." aria-label="Search" name="search">
+        <button class="btn btn-outline-secondary" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+        </button>
+      </form>
 <!--  end search-->
       <ul class="nav nav-pills">
-        <li class="nav-item"><a href="{% url 'index' %}" class="nav-link active" aria-current="page">Home</a></li>
+        <div class="d-flex align-items-center">
+          <li class="nav-item"><a href="{% url 'index' %}" class="nav-link active" aria-current="page">Home</a></li>
 <!--dropdown button-->
-        <li class="nav-item">
-          <div class="dropdown text-end">
-            <a href="#" class="nav-link text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Sorting</a>
-            <ul class="dropdown-menu text-small">
-              <li><button class="dropdown-item" onclick="redirectToUrl('sort=-watches')">Populate first</button></li>
-              <li><button class="dropdown-item" onclick="redirectToUrl('sort=-created_date')">New updated</button></li>
-              <li><a class="dropdown-item" href="?sort=-common_grade">Best grades</a></li>
-              <li><hr class="dropdown-divider"></li>
-            </ul>
-          </div>
-        </li>    <!-- dropdown button -->
+          <li class="nav-item">
+            <div class="dropdown text-end">
+              <a href="#" class="nav-link text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Sorting</a>
+              <ul class="dropdown-menu text-small">
+                <li><button class="dropdown-item" onclick="redirectToUrl('sort=-watches')">Populate first</button></li>
+                <li><button class="dropdown-item" onclick="redirectToUrl('sort=-created_date')">New updated</button></li>
+                <li><a class="dropdown-item" href="?sort=-common_grade">Best grades</a></li>
+                <li><hr class="dropdown-divider"></li>
+              </ul>
+            </div>
+          </li>    <!-- dropdown button -->
 
-        <li class="nav-item"><a href="{% url 'categories' %}" class="nav-link">Categories</a></li>
-        {% if request.user.is_authenticated %}
-          <div class="dropdown text-end">
-            <a href="#" class="nav-link text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ request.user }}</a>
-            <ul class="dropdown-menu text-small">
-              {% if request.user.is_admin %}
-                <li><a class="dropdown-item" href="{% url 'create' %}">create_comix</a></li>
-              {% endif %}
-              <li><a class="dropdown-item" href="{% url 'logout' %}">logout</a></li>
-            </ul>
-          </div>
-        {% else %}
-          <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
-        {% endif %}
+          <li class="nav-item"><a href="{% url 'categories' %}" class="nav-link">Categories</a></li>
+          {% if request.user.is_authenticated %}
+            <div class="dropdown text-end">
+              <a href="#" class="nav-link text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ request.user }}</a>
+              <ul class="dropdown-menu text-small">
+                {% if request.user.is_admin %}
+                  <li><a class="dropdown-item" href="{% url 'create' %}">create_comix</a></li>
+                {% endif %}
+                <li><a class="dropdown-item" href="{% url 'logout' %}">logout</a></li>
+              </ul>
+            </div>
+          {% else %}
+            <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+          {% endif %}
+        </div>
       </ul>
     </header>
   </div>

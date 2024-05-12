@@ -16,17 +16,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!e$nk5dios1gqs)uf#&vgh26hp7=il@$%xx1xegdkt_6khszkl"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
 AUTH_USER_MODEL = 'myuser.MyUser'
 
 # Application definition
@@ -77,19 +66,6 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'comix',  # Имя вашей базы данных
-        'USER': 'ular',  # Имя вашего пользователя
-        'PASSWORD': 'admin',  # Ваш пароль
-        'HOST': 'localhost',  # Хост, на котором работает PostgreSQL
-        'PORT': '5432',  # Порт (по умолчанию 5432)
-    }
-}
-
 # docker db
 # DATABASES = {
 #     'default': {
@@ -138,10 +114,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -159,16 +131,21 @@ MEDIA_URL = 'media/'
 #     }
 # }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://core-redis-comix-1:6379/1",  # Используем имя контейнера Redis
-    }
-}
-
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
+#         "LOCATION": "redis://core-redis-comix-1:6379/1",  # Используем имя контейнера Redis
 #     }
 # }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+try:
+    from .local_settings import *
+except ImportError:
+    from .prod_settings import *
