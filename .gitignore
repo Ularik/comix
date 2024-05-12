@@ -7,3 +7,5 @@ media
 *.cbr
 *.cbz
 *zip
+core/local_settings.py
+core/prod_settings.py
