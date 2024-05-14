@@ -1,5 +1,7 @@
+from extract_comix.extract_script import extract_file
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 User = get_user_model()
 
 
@@ -104,7 +106,7 @@ class Comix(models.Model):
         null=True,
         blank=True
     )
-    pages = models.PositiveIntegerField(    # will automatically fill after first read in comix_detail
+    pages = models.PositiveIntegerField(      # will automatically fill after first read in comix_detail
         null=True,
         blank=True
     )
@@ -114,6 +116,7 @@ class Comix(models.Model):
         null=True,
         blank=True
     )
+    comix_pages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     image = models.ImageField(
         upload_to='comix/images/',
         null=True,
@@ -135,6 +138,16 @@ class Comix(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.pages:
+            file_path = self.comix_file.url
+            name_of_pages, count_page = extract_file(file_path, self.title)
+            self.comix_pages = name_of_pages
+            self.pages = count_page
+
+        return super().save()
 
 
 class Bookmarks(models.Model):

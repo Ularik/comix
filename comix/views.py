@@ -1,20 +1,15 @@
-import rarfile
+import os
+from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Comix, Likes, Bookmarks, Comments, Rating, Genre, Posters
+from .models import Comix, Likes, Bookmarks, Comments, Rating, Genre
 from .forms import ComicsCreateForm
 from django.views.generic import ListView
-from .filters import ComixFilter
 from django.contrib.auth import get_user_model
 from .utils import is_exist
 from functools import partial
-import base64
-import io
-from django.core.cache import cache
-import zipfile
-from PIL import Image
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -93,20 +88,16 @@ def detail(request, pk):
 
             get_exist_object = partial(is_exist, user, comix)  # partial = is_exist(user, comix, x)
             if 'comix_like' in request.POST:
-                print('LIKE!')
                 like = get_exist_object('comix_like')
-                print(like)
                 if not like:
                     Likes.objects.create(user=user, comix=comix)
                 else:
                     like.delete()
 
             if 'comment' in request.POST:
-                print('COMMENT!')
                 Comments.objects.create(user=user, text=request.POST['comment'], comix=comix)
 
             if 'comix_bookmark' in request.POST:
-                print('BOOKMARK!')
                 bookmark = get_exist_object('comix_bookmark')
                 if not bookmark:
                     Bookmarks.objects.create(user=user, comix=comix)
@@ -114,7 +105,6 @@ def detail(request, pk):
                     bookmark.delete()
 
             if 'grade' in request.POST:
-                print('GRADE!')
                 grade = get_exist_object('grade')
                 if not grade:
                     Rating.objects.create(user=user, comix=comix, grade=request.POST['grade'])
@@ -148,75 +138,15 @@ def detail(request, pk):
 
 
 def open_file(request, pk):
-    page_num = int(request.GET.get('page', 0))  # get page_num for comix
+    page_num = int(request.GET.get('page', 0))     # get page_num for comix
     comix = Comix.objects.get(pk=pk)
-    file_path = comix.comix_file.url  # get path of comix_file.cbr
-    image_name = f'{comix.title}p{page_num}'
-    print(file_path)
 
-    if image_name in cache:
-        image_base64 = cache.get(image_name)
-        return render(request, 'comix/image.html',
-                      context={'image_page': f'data:image/jpeg;base64,{image_base64}'})
+    if page_num < 0 or page_num > comix.pages:
+        return render(request, 'comix/image.html', context={'the_end': '1'})
 
-    if comix.pages:
-        if page_num < 0 or page_num > comix.pages:
-            return render(request, 'comix/image.html', context={'the_end': '1'})
-
-    open_comix_file = rarfile.RarFile
-    if file_path.endswith('cbz'):
-        open_comix_file = zipfile.ZipFile
-
-    with open_comix_file(rf'.{file_path}', 'r') as archive:  # extract comix_file.cbr
-        name_list = archive.namelist()  # get name of every page in comix
-        count = -1
-        for image_name in name_list:
-            if image_name.endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                count += 1
-                with archive.open(image_name) as page_content:
-                    image = Image.open(page_content)  # open image with Pillow
-                    image_bytes = io.BytesIO()  # open buffer in byte
-                    image.save(image_bytes, format='JPEG')  # save image in buffer: image_bytes in JPEG format
-                    image_bytes = image_bytes.getvalue()  # get value for buffer in bytes format
-                    image_base64 = base64.b64encode(image_bytes).decode(
-                        'utf-8')  # base64 get bytes and return string code
-                    image_name = f'{comix.title}p{count}'
-                    cache.set(image_name, image_base64, 30 * 60)
-        if not comix.pages:
-            comix.pages = count
-            print('Save pages!')
-            comix.save()
-
-    image_name = f'{comix.title}p{page_num}'
-    if image_name in cache:
-        image_base64 = cache.get(image_name)
-        data = {'image_page': f'data:image/jpeg;base64,{image_base64}'}
-    else:
-        data = {'page_not_found': '1'}
-
-    return render(request, 'comix/image.html', context=data)
-
-
-# def catalog(request):
-#     populate = Comix.objects.order_by('-watches')[:15]
-#     populate_pk = populate.values_list('id', flat=True)
-#     bestsellers = Comix.objects.filter(pk__in=populate_pk, common_grade__gte=7)
-#     updates_nearly = Comix.objects.order_by('-updated_date')[:15]
-#
-#     data = {
-#         'populate': populate,
-#         'bestsellers': bestsellers,
-#         'updates_nearly': updates_nearly
-#     }
-#     for genre in Genre.objects.all():
-#         stack_of_comics = Comix.objects.filter(genre=genre)
-#         data['genres'] = data.get('genres', []).append(stack_of_comics)
-#
-#     return render(request, 'comix/categories.html', context=data)
-
-
-def contact(request):
-    return HttpResponse('Bound')
+    name_page = comix.comix_pages[page_num]
+    image = os.path.join(settings.STATIC_URL, comix.title, name_page)
+    return render(request, 'comix/image.html', context={'image': image})
 
 
 @user_passes_test(lambda u: u.is_authenticated and u.is_admin, login_url='/comix/index/')
@@ -234,10 +164,3 @@ def create_comics_view(request):
 
     return render(request, 'comix/comics-create.html', context={'form': form, 'not_valid': not_valid})
 
-
-def about(request):
-    return render(request, 'comix/about.html', {'title': 'about page'})
-
-
-def page_not_found(request):
-    return HttpResponse('Page_not_found')

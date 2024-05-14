@@ -7,5 +7,7 @@ media
 *.cbr
 *.cbz
 *zip
+extract_comix/Deadpool
+extract_comix/Superman
 core/local_settings.py
 core/prod_settings.py

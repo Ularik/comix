@@ -26,14 +26,14 @@
       <div class="col-md-7 text-break" style="position: relative;">
         <p style="position: absolute; top: 0; right: 0;">Wait a minute after click read while file is loading</p>
 <!--        start send comment-->
-          <form id="commentForm" action="." method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label">Send comment</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" name="comment" value="" rows="3"></textarea><br>
-              <input type="submit" class="btn btn-outline-secondary" value="send">
-            </div>
-          </form>
+      <form action="." method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="comment" class="form-label">Send comment</label>
+          <textarea class="form-control" id="comment" name="comment" value="" rows="3"></textarea><br>
+          <input type="submit" class="btn btn-outline-secondary" value="send">
+        </div>
+      </form>
   <!--     end send-comment   -->
   <!--  start scroll comments-->
           {% show_comments %}

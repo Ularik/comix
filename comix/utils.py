@@ -1,6 +1,5 @@
 import os
 import django
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
 
@@ -12,4 +11,5 @@ def is_exist(user, comix, model_type):
     record = dct[model_type].objects.filter(user=user, comix=comix).first()
     if record:
         return record
+
 

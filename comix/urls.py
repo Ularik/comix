@@ -7,7 +7,5 @@ urlpatterns = [
     path('detail/<int:pk>/', views.detail, name='detail'),
     path('categories/', views.category_view, name='categories'),
     path('create/', views.create_comics_view, name='create'),
-    path('contact/', views.contact, name='contact'),
-    path('about/', views.about, name='about'),
     path('open_file/<int:pk>/', views.open_file, name='open_file')
 ]
