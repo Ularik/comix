@@ -145,7 +145,7 @@ def open_file(request, pk):
         return render(request, 'comix/image.html', context={'the_end': '1'})
 
     name_page = comix.comix_pages[page_num]
-    image = os.path.join(settings.STATIC_URL, comix.title, name_page)
+    image = os.path.join(settings.STATIC_URL, 'extract_comix/', comix.title, name_page)
     return render(request, 'comix/image.html', context={'image': image})
 
 

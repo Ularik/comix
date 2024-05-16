@@ -1,4 +1,4 @@
-from extract_comix.extract_script import extract_file
+from static.extract_comix.extract_script import extract_file
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -140,6 +140,10 @@ class Comix(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        comix = Comix.objects.filter(title=self.title).first()
+        if comix:
+            return comix
+
         super().save(*args, **kwargs)
         if not self.pages:
             file_path = self.comix_file.url

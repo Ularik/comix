@@ -14,6 +14,7 @@ def extract_file(path, title):
         name_list = archive.namelist()  # get name of every page in comix
         count = -1  # count for find out page num
         dir_path_for_current_comix = f'{os.path.dirname(__file__)}/{title}'  # path: ...core/extract_comix/title
+
         os.mkdir(dir_path_for_current_comix)
         names_of_pages = []
         for image_name in name_list:
